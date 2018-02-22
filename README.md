@@ -2,6 +2,7 @@
 Utilities for Dukascopy's JForex strategies
 
 ### TODO
-- pom.xml
-- CI/CD
-- maven repository
+- artefact repository info
+- direct download info
+- strategy builder
+- HOWTO use with platform
