@@ -19,7 +19,7 @@ public final class EasyOperations {
      *
      * @param fastValues
      * @param slowValues
-     * @return
+     * @return Positive integer if crossed upwards, negative if downwards, 0 if no cross.
      */
     public static Integer valuesCrossed(List<Double> fastValues, List<Double> slowValues) {
         if (fastValues.size() < 1 || slowValues.size() < 1) {

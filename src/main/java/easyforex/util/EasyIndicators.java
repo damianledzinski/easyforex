@@ -148,8 +148,8 @@ public final class EasyIndicators {
      * @throws JFException
      */
     public List<Double> ma(Period period, Integer timePeriod, Integer number, IIndicators.MaType maType) throws JFException {
-        ITick tick = history.getLastTick(instrument);
-        double[] result = indicators.ma(instrument, period, OfferSide.BID, IIndicators.AppliedPrice.CLOSE, timePeriod, maType, Filter.WEEKENDS, tick.getTime(), 0);
+        IBar bar = history.getBar(instrument, period, OfferSide.BID, 1);
+        double[] result = indicators.ma(instrument, period, OfferSide.BID, IIndicators.AppliedPrice.CLOSE, timePeriod, maType, Filter.WEEKENDS, number, bar.getTime(), 0);
         return Arrays.stream(result).boxed().collect(Collectors.toList());
     }
 

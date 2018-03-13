@@ -25,9 +25,9 @@ public abstract class SingleInstrumentAbstarctStrategy extends AbstractStrategy 
 
     @Configurable("Selected instrument")
     public Instrument selectedInstrument = Instrument.EURUSD;
-    @Configurable("Stop loss in pips, disabled=0")
+    @Configurable("Default stop loss in pips, disabled=0")
     public int stopLossPips = 0;
-    @Configurable("Take profit in pips, disabled=0")
+    @Configurable("Default take profit in pips, disabled=0")
     public int takeProfitPips = 0;
 
     /**
@@ -58,7 +58,8 @@ public abstract class SingleInstrumentAbstarctStrategy extends AbstractStrategy 
     }
 
     /**
-     * Submits order
+     * Submits order using passed or default Stop Loss/Take Profit values,
+     * whichever has less pips.
      *
      * @param command
      * @param amount
@@ -69,12 +70,23 @@ public abstract class SingleInstrumentAbstarctStrategy extends AbstractStrategy 
      */
     protected IOrder submitOrder(IEngine.OrderCommand command, double amount, double stopLossPrice, double takeProfitPrice) throws JFException {
         ITick lastTick = getLastTick();
-        double sl = command.isLong()
-                ? Math.min(stopLossPrice, StopLossTakeProfitUtils.getStopLossPrice(command, selectedInstrument, lastTick, stopLossPips))
-                : Math.max(stopLossPrice, StopLossTakeProfitUtils.getStopLossPrice(command, selectedInstrument, lastTick, stopLossPips));
-        double tp = command.isLong()
-                ? Math.min(takeProfitPrice, StopLossTakeProfitUtils.getTakeProfitPrice(command, selectedInstrument, lastTick, takeProfitPips))
-                : Math.max(takeProfitPrice, StopLossTakeProfitUtils.getTakeProfitPrice(command, selectedInstrument, lastTick, takeProfitPips));
+        double sl;
+        double tp;
+        if (stopLossPips <= 0) {
+            sl = stopLossPrice;
+        } else {
+            sl = command.isLong()
+                    ? Math.min(stopLossPrice, StopLossTakeProfitUtils.getStopLossPrice(command, selectedInstrument, lastTick, stopLossPips))
+                    : Math.max(stopLossPrice, StopLossTakeProfitUtils.getStopLossPrice(command, selectedInstrument, lastTick, stopLossPips));
+        }
+
+        if (takeProfitPips <= 0) {
+            tp = takeProfitPrice;
+        } else {
+            tp = command.isLong()
+                    ? Math.min(takeProfitPrice, StopLossTakeProfitUtils.getTakeProfitPrice(command, selectedInstrument, lastTick, takeProfitPips))
+                    : Math.max(takeProfitPrice, StopLossTakeProfitUtils.getTakeProfitPrice(command, selectedInstrument, lastTick, takeProfitPips));
+        }
 
         IOrder order = submitOrder(selectedInstrument, command, amount, sl, tp);
 
