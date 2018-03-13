@@ -23,97 +23,103 @@ import java.util.stream.Collectors;
  */
 public abstract class AbstractStrategy implements IStrategy {
 
-	protected IContext context;
-	// this strategy name
-	protected final String strategyName;
-	protected final AtomicInteger orderCounter = new AtomicInteger();
+    protected IContext context;
+    // this strategy name
+    protected final String strategyName;
+    protected final AtomicInteger orderCounter = new AtomicInteger();
 
-	public AbstractStrategy() {
-		strategyName = this.getClass().getSimpleName() + "_" + StrategyUtils.getUniqueNameSufix();
-	}
+    public AbstractStrategy() {
+        strategyName = this.getClass().getSimpleName() + "_" + StrategyUtils.getUniqueNameSufix();
+    }
 
-	public AbstractStrategy(String strategyName) {
-		this.strategyName = strategyName;
-	}
+    public AbstractStrategy(String strategyName) {
+        this.strategyName = strategyName;
+    }
 
-	/**
-	 * TODO use super.onStart(context)
-	 *
-	 * @param context
-	 * @throws JFException
-	 */
-	@Override
-	public void onStart(IContext context) throws JFException {
-		this.context = context;
-	}
+    /**
+     * TODO use super.onStart(context)
+     *
+     * @param context
+     * @throws JFException
+     */
+    @Override
+    public void onStart(IContext context) throws JFException {
+        this.context = context;
+        println(strategyName + " started.");
+    }
 
-	@Override
-	public void onTick(Instrument instrument, ITick tick) throws JFException {
-	}
+    @Override
+    public void onTick(Instrument instrument, ITick tick) throws JFException {
+    }
 
-	@Override
-	public void onBar(Instrument instrument, Period period, IBar askBar, IBar bidBar) throws JFException {
-	}
+    @Override
+    public void onBar(Instrument instrument, Period period, IBar askBar, IBar bidBar) throws JFException {
+    }
 
-	@Override
-	public void onMessage(IMessage message) throws JFException {
-		if (message.getOrder() != null && message.getOrder().getLabel().startsWith(strategyName)) {
-			MessageUtils.printMessage(context, message);
-		}
-	}
+    @Override
+    public void onMessage(IMessage message) throws JFException {
+        if (message.getOrder() != null && message.getOrder().getLabel().startsWith(strategyName)) {
+            MessageUtils.printMessage(context, message);
+        }
+    }
 
-	@Override
-	public void onAccount(IAccount account) throws JFException {
-	}
+    @Override
+    public void onAccount(IAccount account) throws JFException {
+    }
 
-	@Override
-	public void onStop() throws JFException {
-		for (IOrder order : getOrders()) {
-			order.close();
-		}
-	}
+    @Override
+    public void onStop() throws JFException {
+        for (IOrder order : getOrders()) {
+            order.close();
+        }
+    }
 
-	/**
-	 * Submi order, automaticly labeling it
-	 *
-	 * @param instrument
-	 * @param command
-	 * @param amount
-	 * @param stopLossPrice
-	 * @param takeProfitPrice
-	 * @return
-	 * @throws JFException
-	 */
-	protected IOrder submitOrder(Instrument instrument, IEngine.OrderCommand command, double amount, double stopLossPrice, double takeProfitPrice) throws JFException {
-		final String label = strategyName + "_" + orderCounter.incrementAndGet();
-		double sl = StopLossTakeProfitUtils.round(instrument, stopLossPrice);
-		double tp = StopLossTakeProfitUtils.round(instrument, takeProfitPrice);
-		return StrategyUtils.submitOrder(context, label, instrument, command, amount, sl, tp);
-	}
+    /**
+     * Submit order, automatically labeling it.
+     *
+     * @param instrument
+     * @param command
+     * @param amount
+     * @param stopLossPrice
+     * @param takeProfitPrice
+     * @return
+     * @throws JFException
+     */
+    protected IOrder submitOrder(Instrument instrument, IEngine.OrderCommand command, double amount, double stopLossPrice, double takeProfitPrice) throws JFException {
+        final String label = strategyName + "_" + orderCounter.incrementAndGet();
+        double sl = StopLossTakeProfitUtils.round(instrument, stopLossPrice);
+        double tp = StopLossTakeProfitUtils.round(instrument, takeProfitPrice);
+        return StrategyUtils.submitOrder(context, label, instrument, command, amount, sl, tp);
+    }
 
-	/**
-	 * Returns this strategy orders (submited by {@code submitOrder} method)
-	 *
-	 * @return
-	 * @throws JFException
-	 */
-	protected List<IOrder> getOrders() throws JFException {
-		return context.getEngine().getOrders()
-				.stream()
-				.filter(order -> order.getLabel().startsWith(strategyName))
-				.collect(Collectors.toList());
-	}
+    /**
+     * Returns this strategy orders (submited by {@code submitOrder} method)
+     *
+     * @return
+     * @throws JFException
+     */
+    protected List<IOrder> getOrders() throws JFException {
+        return context.getEngine().getOrders()
+                .stream()
+                .filter(order -> order.getLabel().startsWith(strategyName))
+                .collect(Collectors.toList());
+    }
 
-	protected void println(Object obj) {
-		context.getConsole().getOut().println(obj);
-	}
-	
-	/**
-	 * Subscribe for given instruments
-	 *
-	 * @param instruments instrumensts to subscribe
-	 */
-	protected void subscribeInstruments(Instrument... instruments) {
-		StrategyUtils.subscribeInstruments(context, instruments);
-	}
+    /**
+     * An "alias" for Ducascopy's print method.
+     *
+     * @param obj
+     */
+    protected void println(Object obj) {
+        context.getConsole().getOut().println(obj);
+    }
+
+    /**
+     * Subscribe to given instruments.
+     *
+     * @param instruments instruments to subscribe
+     */
+    protected void subscribeInstruments(Instrument... instruments) {
+        StrategyUtils.subscribeInstruments(context, instruments);
+    }
 }
