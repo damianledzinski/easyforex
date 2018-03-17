@@ -45,7 +45,7 @@ public class EasyOperationsTest {
     }
 
     @Test
-    public void valuesCrossed_CrossedUpwardsEarly_Returns0() {
+    public void valuesCrossed_CrossedUpwardsEarly_Returns5() {
         List<Double> fast = Arrays.asList(1.0, 3.0, 3.0, 3.0, 3.0, 3.0);
         List<Double> slow = Arrays.asList(2.0, 2.0, 2.0, 2.0, 2.0, 2.0);
 
@@ -56,7 +56,7 @@ public class EasyOperationsTest {
     }
 
     @Test
-    public void valuesCrossed_CrossedDownwardsEarly_Returns0() {
+    public void valuesCrossed_CrossedDownwardsEarly_ReturnsMinus5() {
         List<Double> fast = Arrays.asList(3.0, 1.0, 1.0, 1.0, 1.0, 1.0);
         List<Double> slow = Arrays.asList(2.0, 2.0, 2.0, 2.0, 2.0, 2.0);
 
