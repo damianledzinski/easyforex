@@ -122,4 +122,13 @@ public abstract class AbstractStrategy implements IStrategy {
     protected void subscribeInstruments(Instrument... instruments) {
         StrategyUtils.subscribeInstruments(context, instruments);
     }
+
+    /**
+     * Subscribe to given instruments.
+     *
+     * @param instruments instruments to subscribe
+     */
+    protected void subscribeInstruments(List<Instrument> instruments) {
+        StrategyUtils.subscribeInstruments(context, instruments);
+    }
 }

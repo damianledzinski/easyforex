@@ -13,6 +13,8 @@ import easyforex.util.EasyChart;
 import easyforex.util.EasyIndicators;
 import easyforex.util.SarUtils;
 import easyforex.util.StopLossTakeProfitUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Base class for strategies, that uses single instrument Adds chart support
@@ -43,6 +45,7 @@ public abstract class SingleInstrumentAbstarctStrategy extends AbstractStrategy 
         this.chart = new EasyChart(context, selectedInstrument);
 
         subscribeInstruments(selectedInstrument);
+        subscribeInstruments(getRequiredInstruments());
     }
 
     /**
@@ -96,7 +99,7 @@ public abstract class SingleInstrumentAbstarctStrategy extends AbstractStrategy 
     }
 
     /**
-     * Put this method to {@code onTick} for enabling trailing stop
+     * Put this method to {@code onTick} to enable trailing stop
      *
      * @param tick
      * @throws JFException
@@ -118,7 +121,7 @@ public abstract class SingleInstrumentAbstarctStrategy extends AbstractStrategy 
     }
 
     /**
-     * Put this method to {@code onTick} for enabling SAR based trailing stop
+     * Put this method to {@code onTick} to enable SAR based trailing stop
      *
      * @param period
      * @param askBar
@@ -146,5 +149,15 @@ public abstract class SingleInstrumentAbstarctStrategy extends AbstractStrategy 
 
     protected ITick getLastTick() throws JFException {
         return context.getHistory().getLastTick(selectedInstrument);
+    }
+
+    /**
+     * Returns instruments that are required to be subscribed by the strategy to
+     * process order in accounts currency.
+     *
+     * @return
+     */
+    public List<Instrument> getRequiredInstruments() {
+        return new ArrayList<>();
     }
 }
