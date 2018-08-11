@@ -1,6 +1,9 @@
 # easyforex
 Utilities for Dukascopy's JForex strategies
 
+# Not longer support
+Migrated to: https://gitlab.com/damian.ledzinski/easyforex
+
 ### TODO
 - artefact repository info
 - direct download info (https://dymek.utp.edu.pl/artifactory/libs-snapshot-local/easyforex/)
